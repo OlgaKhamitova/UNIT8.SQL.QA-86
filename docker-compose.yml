@@ -1,0 +1,17 @@
+
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:8.0.34
+    restart: always
+    volumes:
+      - './schema_mysql:/docker-entrypoint-initdb.d'
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_PASSWORD: pass
+      MYSQL_USER: app
+      MYSQL_DATABASE: app
+    ports:
+      - "3306:3306"
+#    entrypoint: ["mysql", "--user=app" , "--password=pass", "--execute=USE app; DELETE FROM users"]
