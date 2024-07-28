@@ -24,6 +24,18 @@ public class DataHelper {
         return FAKER.internet().password();
     }
 
+    public static VerificationCode getInvalidVerificationCode(VerificationCode verificationCode) {
+        var validVerificationCode = verificationCode.getCode();
+        var invalidVerificationCode = validVerificationCode.substring(0, validVerificationCode.length() - 1);
+        return new VerificationCode(invalidVerificationCode);
+    }
+
+    public static AuthInfo getInvalidAuthInfo(AuthInfo authInfo) {
+        var validPassword = authInfo.getPassword();
+        var invalidPassword = validPassword + "abc";
+        return new AuthInfo(authInfo.getLogin(), invalidPassword);
+    }
+
     public static AuthInfo generateRandomUser() {
         return new AuthInfo(generateRandomLogin(), generateRandomPassword());
     }
