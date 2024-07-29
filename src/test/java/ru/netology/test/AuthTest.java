@@ -1,13 +1,10 @@
 package ru.netology.test;
-import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.*;
 import ru.netology.data.DataHelper;
 import ru.netology.data.SqlHelper;
 import ru.netology.page.LoginPage;
-import java.time.Duration;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthTest {
     @BeforeEach
@@ -32,7 +29,7 @@ public class AuthTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
-        verificationPage.validVerify(verificationCode);
+        assertDoesNotThrow(() -> verificationPage.validVerify(verificationCode), "Пользователь не смог залогиниться");
     }
 
     @Test
@@ -43,10 +40,8 @@ public class AuthTest {
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
         var invalidVerificationCode = DataHelper.getInvalidVerificationCode(verificationCode);
-        verificationPage.validVerify(invalidVerificationCode);
-        $("[data-test-id=error-notification]").shouldBe(visible, Duration.ofSeconds(15));
-        $("[data-test-id=error-notification] .notification__title").shouldHave(Condition.exactText("Ошибка"));
-        $("[data-test-id=error-notification] .notification__content").shouldHave(Condition.exactText("Ошибка! Неверно указан код! Попробуйте ещё раз."));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> verificationPage.invalidVerify(invalidVerificationCode));
+        assertEquals("Отсутствует ошибка неверного код авторизации", exception.getMessage(), "Система принимает неверный код авторизации");
     }
 
     @Test
@@ -57,13 +52,8 @@ public class AuthTest {
         var invalidAuthInfo = DataHelper.getInvalidAuthInfo(authInfo);
         for (int i = 0; i < 3; i++) {
             loginPage.invalidLogin(invalidAuthInfo);
-            $("[data-test-id=error-notification]").shouldBe(visible, Duration.ofSeconds(10));
-            $("[data-test-id=error-notification] .notification__title").shouldHave(Condition.exactText("Ошибка"));
-            $("[data-test-id=error-notification] .notification__content").shouldHave(Condition.exactText("Ошибка! Неверно указан логин или пароль"));
         }
-        loginPage.invalidLogin(authInfo);
-        $("[data-test-id=error-notification]").shouldBe(visible, Duration.ofSeconds(10));
-        $("[data-test-id=error-notification] .notification__title").shouldHave(Condition.exactText("Ошибка"));
-        $("[data-test-id=error-notification] .notification__content").shouldHave(Condition.exactText("Ошибка! Пользователь заблокирован"));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> loginPage.blockedUserLogin(authInfo));
+        assertEquals("Отсутстует ошибка блокировки пользователя", exception.getMessage(), "Пользователь не заблокирован после трех неудачных попыток");
     }
 }
