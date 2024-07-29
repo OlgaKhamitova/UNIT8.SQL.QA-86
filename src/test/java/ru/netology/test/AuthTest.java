@@ -53,7 +53,6 @@ public class AuthTest {
         for (int i = 0; i < 3; i++) {
             loginPage.invalidLogin(invalidAuthInfo);
         }
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> loginPage.blockedUserLogin(authInfo));
-        assertEquals("Отсутстует ошибка блокировки пользователя", exception.getMessage(), "Пользователь не заблокирован после трех неудачных попыток");
+        assertDoesNotThrow(() -> loginPage.blockedUserLogin(authInfo), "Пользователь не заблокирован после трех неудачных попыток");
     }
 }

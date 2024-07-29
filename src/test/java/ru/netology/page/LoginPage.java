@@ -35,12 +35,14 @@ public class LoginPage {
     }
 
     public void verifyMustHaveWrongCredentialsNotification() {
+        notification.shouldBe(visible, Duration.ofSeconds(10));
         if (!notificationContent.getText().equals("Ошибка! Неверно указан логин или пароль")) {
             throw new IllegalArgumentException("Отсутствует ошибка неверного логина и пароля");
         }
     }
 
     public void verifyMustHaveUserBlockedNotification() {
+        notification.shouldBe(visible, Duration.ofSeconds(10));
         if (!notificationContent.getText().equals("Ошибка! Пользователь заблокирован")) {
             throw new IllegalArgumentException("Отсутстует ошибка блокировки пользователя");
         }
