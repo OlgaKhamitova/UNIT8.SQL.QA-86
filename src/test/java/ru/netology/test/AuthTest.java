@@ -17,10 +17,10 @@ public class AuthTest {
         SqlHelper.cleanAuthCode();
     }
 
-//    @AfterAll
-//    static void tearDownAll() {
-//        SqlHelper.cleanDataBase();
-//    }
+    @AfterAll
+    static void tearDownAll() {
+        SqlHelper.cleanDataBase();
+    }
 
     @Test
     @DisplayName("Should successfully login to dashboard with exist login and password from sut test data")
@@ -29,7 +29,8 @@ public class AuthTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
-        verificationPage.validVerify(verificationCode);
+        var dashboardPage = verificationPage.validVerify(verificationCode);
+        dashboardPage.verifyHeadingIsVisible();
     }
 
     @Test
