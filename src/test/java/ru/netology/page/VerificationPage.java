@@ -1,9 +1,11 @@
 package ru.netology.page;
+
 import com.codeborne.selenide.SelenideElement;
 import ru.netology.dto.VerificationCode;
 
 import java.time.Duration;
 
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -26,13 +28,7 @@ public class VerificationPage {
     public void invalidVerify(VerificationCode verificationCode) {
         codeField.setValue(verificationCode.getCode());
         verifyButton.click();
-        verifyMustHaveWrongCodeNotification();
-    }
-
-    public void verifyMustHaveWrongCodeNotification() {
         notification.shouldBe(visible, Duration.ofSeconds(10));
-        if (!notificationContent.getText().equals("Ошибка! Неверно указан код! Попробуйте ещё раз.")) {
-            throw new IllegalArgumentException("Отсутствует ошибка неверного код авторизации");
-        }
+        notificationContent.shouldHave(exactText("Ошибка! Неверно указан код! Попробуйте ещё раз."));
     }
 }

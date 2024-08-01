@@ -17,10 +17,10 @@ public class AuthTest {
         SqlHelper.cleanAuthCode();
     }
 
-    @AfterAll
-    static void tearDownAll() {
-        SqlHelper.cleanDataBase();
-    }
+//    @AfterAll
+//    static void tearDownAll() {
+//        SqlHelper.cleanDataBase();
+//    }
 
     @Test
     @DisplayName("Should successfully login to dashboard with exist login and password from sut test data")
@@ -29,7 +29,7 @@ public class AuthTest {
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
-        assertDoesNotThrow(() -> verificationPage.validVerify(verificationCode), "Пользователь не смог залогиниться");
+        verificationPage.validVerify(verificationCode);
     }
 
     @Test
@@ -40,8 +40,7 @@ public class AuthTest {
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
         var invalidVerificationCode = DataHelper.getInvalidVerificationCode(verificationCode);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> verificationPage.invalidVerify(invalidVerificationCode));
-        assertEquals("Отсутствует ошибка неверного код авторизации", exception.getMessage(), "Система принимает неверный код авторизации");
+        verificationPage.invalidVerify(invalidVerificationCode);
     }
 
     @Test
@@ -53,6 +52,6 @@ public class AuthTest {
         for (int i = 0; i < 3; i++) {
             loginPage.invalidLogin(invalidAuthInfo);
         }
-        assertDoesNotThrow(() -> loginPage.blockedUserLogin(authInfo), "Пользователь не заблокирован после трех неудачных попыток");
+        loginPage.blockedUserLogin(authInfo);
     }
 }

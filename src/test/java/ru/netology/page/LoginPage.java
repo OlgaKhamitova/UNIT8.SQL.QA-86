@@ -22,30 +22,18 @@ public class LoginPage {
 
     public void invalidLogin(AuthInfo authInfo) {
         login(authInfo);
-        verifyMustHaveWrongCredentialsNotification();
+        notification.shouldBe(visible, Duration.ofSeconds(10));
+        notificationContent.shouldHave(exactText("Ошибка! Неверно указан логин или пароль"));
         cleanUpField(loginField);
         cleanUpField(passwordField);
     }
 
     public void blockedUserLogin(AuthInfo authInfo) {
         login(authInfo);
-        verifyMustHaveUserBlockedNotification();
+        notification.shouldBe(visible, Duration.ofSeconds(10));
+        notificationContent.shouldHave(exactText("Ошибка! Пользователь заблокирован"));
         cleanUpField(loginField);
         cleanUpField(passwordField);
-    }
-
-    public void verifyMustHaveWrongCredentialsNotification() {
-        notification.shouldBe(visible, Duration.ofSeconds(10));
-        if (!notificationContent.getText().equals("Ошибка! Неверно указан логин или пароль")) {
-            throw new IllegalArgumentException("Отсутствует ошибка неверного логина и пароля");
-        }
-    }
-
-    public void verifyMustHaveUserBlockedNotification() {
-        notification.shouldBe(visible, Duration.ofSeconds(10));
-        if (!notificationContent.getText().equals("Ошибка! Пользователь заблокирован")) {
-            throw new IllegalArgumentException("Отсутстует ошибка блокировки пользователя");
-        }
     }
 
     private void cleanUpField(SelenideElement field) {
