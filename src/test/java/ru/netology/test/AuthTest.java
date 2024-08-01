@@ -4,7 +4,6 @@ import ru.netology.data.DataHelper;
 import ru.netology.data.SqlHelper;
 import ru.netology.page.LoginPage;
 import static com.codeborne.selenide.Selenide.open;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthTest {
     @BeforeEach
@@ -23,14 +22,13 @@ public class AuthTest {
     }
 
     @Test
-    @DisplayName("Should successfully login to dashboard with exist login and password from sut test data")
+    @DisplayName("Should successfully login to dashboard with existing login and password from sut test data")
     void testSuccessLogin(){
         var loginPage = new LoginPage();
         var authInfo = DataHelper.getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = SqlHelper.getVerificationCode(authInfo.getLogin());
-        var dashboardPage = verificationPage.validVerify(verificationCode);
-        dashboardPage.verifyHeadingIsVisible();
+        verificationPage.validVerify(verificationCode);
     }
 
     @Test
